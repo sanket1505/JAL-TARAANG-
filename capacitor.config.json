@@ -1,0 +1,6 @@
+{
+  "appId": "com.jaltaraang.app",
+  "appName": "JalTaraang",
+  "webDir": "build", 
+  "bundledWebRuntime": false
+}

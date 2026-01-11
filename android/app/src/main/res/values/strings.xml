@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">JalTaraang</string>
+    <string name="title_activity_main">JalTaraang</string>
+    <string name="package_name">com.jaltaraang.app</string>
+    <string name="custom_url_scheme">com.jaltaraang.app</string>
+</resources>
