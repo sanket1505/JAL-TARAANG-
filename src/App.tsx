@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Header } from './components/Header';
 import { BottomNavigation } from './components/BottomNavigation';
@@ -17,20 +17,34 @@ import { ProfilePage } from './components/ProfilePage';
 import { NotificationPage } from './components/NotificationPage';
 import { ForgotPasswordPage } from './components/ForgotPasswordPage';
 
-export default function App() {
-  // Initialize state based on localStorage
-  const [activeTab, setActiveTab] = useState(() => {
-    const isAuth = localStorage.getItem('isAuthenticated');
-    return isAuth === 'true' ? 'home' : 'auth';
-  });
+// --- Firebase Imports ---
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase"; 
 
-  // Handler to logout
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userEmail'); // Clear email on logout
-    setActiveTab('auth');
-  };
+export default function App() {
+  const [activeTab, setActiveTab] = useState('auth');
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  // --- Auth Listener ---
+  useEffect(() => {
+    // This listener automatically fires when Firebase login succeeds or fails
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in.
+        // If they are on a login-related page, send them to Home.
+        if (activeTab === 'auth' || activeTab === 'forgot-password') {
+           setActiveTab('home');
+        }
+      } else {
+        // User is signed out.
+        // Force them back to the Auth page.
+        setActiveTab('auth');
+      }
+      setIsInitializing(false);
+    });
+
+    return () => unsubscribe();
+  }, [activeTab]);
 
   const renderActiveComponent = () => {
     const pageVariants = {
@@ -62,33 +76,49 @@ export default function App() {
         return <motion.div {...componentProps}><ForgotPasswordPage onNavigate={setActiveTab} /></motion.div>;
 
       case 'profile':
-        return <motion.div {...componentProps}><ProfilePage onNavigate={(tab) => {
-          if (tab === 'auth') handleLogout(); 
-          else setActiveTab(tab);
-        }} /></motion.div>;
+        return <motion.div {...componentProps}><ProfilePage onNavigate={setActiveTab} /></motion.div>;
+        
       case 'notifications':
         return <motion.div {...componentProps}><NotificationPage onNavigate={setActiveTab} /></motion.div>;
+      
       case 'home':
         return <motion.div {...componentProps}><HomeScreen onNavigate={setActiveTab} /></motion.div>;
+      
       case 'assess':
-        return <motion.div {...componentProps}><AssessmentTool /></motion.div>;
+        // FIX: Passed onNavigate={setActiveTab} so the AR button works
+        return <motion.div {...componentProps}><AssessmentTool onNavigate={setActiveTab} /></motion.div>;
+      
       case 'ar':
         return <motion.div {...componentProps}><ARTankView /></motion.div>;
+      
       case 'knowledge':
         return <motion.div {...componentProps}><KnowledgeHub /></motion.div>;
+      
       case 'cost':
         return <motion.div {...componentProps}><CostGuidance /></motion.div>;
+      
       case 'artificialRecharge':
         return <motion.div {...componentProps}><ArtificialRecharge /></motion.div>;
+      
       case 'arRecharge':
         return <motion.div {...componentProps}><ARRechargeView /></motion.div>;
+      
       default:
         return <motion.div {...componentProps}><HomeScreen onNavigate={setActiveTab} /></motion.div>;
     }
   };
 
-  // Determine if we are on an authentication-related page to hide layout elements
   const isAuthPage = activeTab === 'auth' || activeTab === 'forgot-password';
+
+  // --- Loading Screen ---
+  if (isInitializing) {
+     return (
+        <div className="min-h-screen bg-orange-50 flex items-center justify-center flex-col gap-4">
+           <div className="w-12 h-12 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
+           <p className="text-orange-800 font-medium animate-pulse">Loading Jal Taraang...</p>
+        </div>
+     );
+  }
 
   return (
     <LanguageProvider>
@@ -96,7 +126,6 @@ export default function App() {
       <div className="min-h-screen bg-background text-foreground">
         {!isAuthPage && <Header onNavigate={setActiveTab} />}
         
-        {/* Mobile-optimized container */}
         <main className={!isAuthPage ? "pb-20" : ""}>
           <AnimatePresence mode="wait">
             {renderActiveComponent()}

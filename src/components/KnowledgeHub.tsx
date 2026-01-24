@@ -43,7 +43,7 @@ export function KnowledgeHub() {
       description:
         "Complete guide for residential rainwater harvesting",
       type: "PDF",
-      pages: 45,
+      pages: 198,
       category: "Technical",
       url: "https://cgwa.mowr.gov.in/Documents/Manual-Artificial-Recharge.pdf"
     },
@@ -52,18 +52,20 @@ export function KnowledgeHub() {
       description:
         "Bangalore Water Supply guidelines and approvals",
       type: "PDF",
-      pages: 28,
       category: "Regulatory",
+      url: "https://bwssb.karnataka.gov.in/guidelines/en"
     },
     {
       title: "Tamil Nadu RWH Rules",
       description:
         "State-specific regulations and requirements",
       type: "PDF",
-      pages: 15,
+      pages: 24,
       category: "Legal",
+      url: "https://www.twadboard.tn.gov.in/sites/default/files/RWH%20Guidelines.pdf"
     },
   ];
+
 
   const videos = [
     {
@@ -71,18 +73,21 @@ export function KnowledgeHub() {
       duration: "12:45",
       views: "25K",
       category: "Installation",
+      url: "https://www.youtube.com/watch?v=wOumD-IFfBg"
     },
     {
       title: "Tank Maintenance Guide",
       duration: "8:30",
       views: "18K",
       category: "Maintenance",
+      url: "https://www.youtube.com/watch?v=79s_PJ0E2CQ"
     },
     {
       title: "First Flush Diverter Setup",
       duration: "6:15",
       views: "12K",
       category: "Components",
+      url: "https://www.youtube.com/watch?v=zn1np4_EGaY"
     },
   ];
 
@@ -93,6 +98,7 @@ export function KnowledgeHub() {
       impact: "50,000L daily collection",
       homes: 120,
       savings: "₹2.5L annually",
+      url: "https://en.wikipedia.org/wiki/KoramangalaKoramangala"
     },
     {
       title: "Villa Project - Whitefield",
@@ -100,6 +106,7 @@ export function KnowledgeHub() {
       impact: "25,000L daily collection",
       homes: 45,
       savings: "₹1.2L annually",
+      url: "https://en.wikipedia.org/wiki/Whitefield,_Bengaluru"
     },
   ];
 
@@ -381,7 +388,7 @@ export function KnowledgeHub() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="manuals" className="space-y-4">
+          <TabsContent value="manuals" className="space-y-4" >
             {filteredManuals.length === 0 && hasSearchQuery
               ? renderEmptyState("manuals")
               : filteredManuals.map((manual, index) => (
@@ -392,7 +399,7 @@ export function KnowledgeHub() {
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.02 }}
                   >
-                    <Card className="hover:shadow-md transition-shadow">
+                    <Card className="hover:shadow-md transition-shadow" onClick={() => handleRedirection(manual.url)} >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -421,7 +428,7 @@ export function KnowledgeHub() {
                             </div>
                           </div>
                           <div>
-                            <Button size="icon" variant="ghost">
+                            <Button size="icon" variant="ghost" onClick={() => handleRedirection(manual.url)}>
                               <ExternalLink size={16} />
                             </Button>
                           </div>
@@ -443,7 +450,7 @@ export function KnowledgeHub() {
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.02 }}
                   >
-                    <Card className="hover:shadow-md transition-shadow">
+                    <Card className="hover:shadow-md transition-shadow" onClick={() => handleRedirection(video.url)}>
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -464,10 +471,10 @@ export function KnowledgeHub() {
                               {video.category}
                             </Badge>
                           </div>
-                          <div className="w-16 h-12 bg-gray-200 rounded flex items-center justify-center">
+                          <div className="w-16 h-12 rounded flex items-center justify-center">
                             <Video
-                              size={16}
-                              className="text-gray-500"
+                              size={14}
+                              className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center" onClick={() => handleRedirection(video.url)}
                             />
                           </div>
                         </div>
@@ -489,7 +496,7 @@ export function KnowledgeHub() {
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.02 }}
                   >
-                    <Card className="hover:shadow-md transition-shadow">
+                    <Card className="hover:shadow-md transition-shadow" onClick={() => handleRedirection(successStories.url)} >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <Award className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />

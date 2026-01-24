@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Droplets, Home, TrendingUp, Users, Calculator, Zap, FileText, IndianRupee, CloudRain, Award, Lightbulb, Waves } from 'lucide-react';
+import { Droplets, Home, TrendingUp, Users, Calculator, Zap, FileText, IndianRupee, CloudRain, Award, Lightbulb, Waves, PlayCircle } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { useLanguage } from './LanguageContext';
 
@@ -66,6 +66,34 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
         </Card>
       </motion.div>
 
+      {/* Video Section */}
+      <motion.div variants={itemVariants}>
+        <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300 bg-white rounded-xl overflow-hidden">
+          <CardHeader className="pb-3 pt-5 px-5">
+            <CardTitle className="flex items-center gap-2 text-[18px]">
+              <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                <PlayCircle className="w-4 h-4 text-white" />
+              </div>
+              How it Works
+            </CardTitle>
+            <CardDescription className="text-[13px] text-gray-500 pt-1">
+              Watch this video to understand Rooftop Rainwater Harvesting
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="w-full aspect-video bg-slate-100">
+              <video 
+                src="https://res.cloudinary.com/dvx4hagv7/video/upload/v1768632894/Rooftop_Rainwater_Harvesting_English_720P_gif5dj.mp4" 
+                autoPlay muted loop 
+                className="w-full h-full object-cover"
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Quick Actions */}
       <motion.div variants={itemVariants}>
         <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300 bg-white rounded-xl">
@@ -115,7 +143,9 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
           <CardContent className="space-y-4 pb-6">
             
             {/* Item 1 */}
-            <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors cursor-pointer">
+            <div 
+              onClick={() => window.open('https://bwssb.karnataka.gov.in/31/About%20BWSSB/en', '_blank')}
+              className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors cursor-pointer">
               <div className="flex-shrink-0 mt-1"><IndianRupee className="w-5 h-5 text-green-600" /></div>
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-1">
@@ -128,7 +158,9 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
             </div>
 
             {/* Item 2 */}
-            <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors cursor-pointer">
+            <div 
+              onClick={() => window.open('https://internal.imd.gov.in/press_release/20251002_pr_4350.pdf', '_blank')}
+              className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors cursor-pointer">
               <div className="flex-shrink-0 mt-1"><CloudRain className="w-5 h-5 text-blue-600" /></div>
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-1">
@@ -141,7 +173,9 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
             </div>
 
             {/* Item 3 */}
-            <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors cursor-pointer">
+            <div 
+              onClick={() => window.open('https://www.bis.gov.in/wp-content/uploads/2022/01/Indian-Standards-related-to-irrigation_compressed.pdf', '_blank')}
+              className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors cursor-pointer">
               <div className="flex-shrink-0 mt-1"><Award className="w-5 h-5 text-amber-600" /></div>
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-1">

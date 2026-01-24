@@ -7,8 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Slider } from './ui/slider';
 import { Checkbox } from './ui/checkbox';
+import { useLanguage } from './LanguageContext';
 
 export function CostGuidance() {
+  const { t } = useLanguage();
   const [selectedSystem, setSelectedSystem] = useState('basic');
   const [selectedCapacity, setSelectedCapacity] = useState('2000');
   
@@ -31,7 +33,7 @@ export function CostGuidance() {
 
   const rechargeStructures = {
     pit: {
-      name: 'Recharge Pit',
+      name: t('pit'),
       description: 'Ideal for individual houses and small buildings',
       costPerCubicMeter: 5000,
       includes: ['Excavation', 'Filter material', 'Gravel layers', 'Basic construction'],
@@ -39,7 +41,7 @@ export function CostGuidance() {
       dimensions: '1-2m × 2-3m deep'
     },
     trench: {
-      name: 'Recharge Trench',
+      name: t('trench'),
       description: 'Perfect for small colonies and roadside collection',
       costPerCubicMeter: 6000,
       includes: ['Excavation', 'Filter layers', 'Stone aggregate', 'Inlet/outlet'],
@@ -47,7 +49,7 @@ export function CostGuidance() {
       dimensions: '10-20m × 1-2m × 2-3m'
     },
     shaft: {
-      name: 'Recharge Shaft',
+      name: t('shaft'),
       description: 'Reaches deep groundwater levels',
       costPerCubicMeter: 15000,
       includes: ['Deep excavation', 'Casing pipes', 'Filter screen', 'Professional installation'],
@@ -55,7 +57,7 @@ export function CostGuidance() {
       dimensions: '1-3m diameter × 10-30m deep'
     },
     tank: {
-      name: 'Percolation Tank',
+      name: t('tank'),
       description: 'Large community and village solutions',
       costPerCubicMeter: 8000,
       includes: ['Large excavation', 'Embankment', 'Outlet structures', 'Spillway'],
@@ -198,19 +200,19 @@ export function CostGuidance() {
         <CardHeader className="text-center pb-6">
           <CardTitle className="flex items-center justify-center gap-2">
             <IndianRupee className="w-5 h-5 text-primary" />
-            Cost & Subsidy Guide
+            {t('costSubsidyGuide')}
           </CardTitle>
           <CardDescription>
-            Get cost estimates and find approved contractors
+            {t('costDesc')}
           </CardDescription>
         </CardHeader>
       </Card>
 
       <Tabs defaultValue="calculator" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="calculator">Cost</TabsTrigger>
-          <TabsTrigger value="subsidies">Subsidies</TabsTrigger>
-          <TabsTrigger value="contractors">Contractors</TabsTrigger>
+          <TabsTrigger value="calculator">{t('tabCost')}</TabsTrigger>
+          <TabsTrigger value="subsidies">{t('tabSubsidies')}</TabsTrigger>
+          <TabsTrigger value="contractors">{t('tabContractors')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="calculator" className="space-y-4">
@@ -220,9 +222,9 @@ export function CostGuidance() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-amber-800">
                 <Gift className="w-5 h-5" />
-                RWH Subsidy
+                {t('rwhSubsidyTitle')}
               </CardTitle>
-              <CardDescription>Government support for Rainwater Harvesting</CardDescription>
+              <CardDescription>{t('govSupportRWH')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-2">
@@ -232,11 +234,11 @@ export function CostGuidance() {
                   onCheckedChange={(checked: any) => setSubsidyOptions(prev => ({ ...prev, rwh: !!checked }))}
                 />
                 <label htmlFor="rwh-subsidy" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Apply RWH System Subsidies (up to ₹10,000)
+                  {t('applyRWHSubsidy')}
                 </label>
               </div>
               <div className="text-xs text-amber-700 bg-amber-100 p-2 rounded">
-                💡 Subsidies require pre-approval and certified contractors. Processing time: 2-3 months.
+                💡 {t('subsidyNote')}
               </div>
             </CardContent>
           </Card>
@@ -246,12 +248,12 @@ export function CostGuidance() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <IndianRupee className="w-5 h-5 text-green-500" />
-                RWH System Calculator
+                {t('rwhSystemCalc')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">System Type</label>
+                <label className="block text-sm font-medium mb-2">{t('systemType')}</label>
                 <Select value={selectedSystem} onValueChange={setSelectedSystem}>
                   <SelectTrigger>
                     <SelectValue />
@@ -267,7 +269,7 @@ export function CostGuidance() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Tank Capacity (Liters)</label>
+                <label className="block text-sm font-medium mb-2">{t('tankCapacity')}</label>
                 <Select value={selectedCapacity} onValueChange={setSelectedCapacity}>
                   <SelectTrigger>
                     <SelectValue />
@@ -286,21 +288,21 @@ export function CostGuidance() {
           {/* RWH Cost Breakdown */}
           <Card className="border-green-200 bg-green-50">
             <CardHeader>
-              <CardTitle className="text-green-800">RWH System Cost</CardTitle>
+              <CardTitle className="text-green-800">{t('rwhSystemCost')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex justify-between">
-                <span>System Cost:</span>
+                <span>{t('systemCost')}</span>
                 <span className="font-semibold">₹{rwhCost.toLocaleString()}</span>
               </div>
               {subsidyOptions.rwh && (
                 <div className="flex justify-between text-green-600">
-                  <span>Applied Subsidy:</span>
+                  <span>{t('appliedSubsidy')}:</span>
                   <span className="font-semibold">-₹{rwhSubsidy.toLocaleString()}</span>
                 </div>
               )}
               <div className="border-t pt-2 flex justify-between font-bold">
-                <span>RWH Net Cost:</span>
+                <span>{t('rwhNetCost')}:</span>
                 <span className="text-green-800">₹{rwhNetCost.toLocaleString()}</span>
               </div>
               
@@ -317,7 +319,7 @@ export function CostGuidance() {
               </div>
 
               <div className="bg-blue-50 p-3 rounded-lg">
-                <h4 className="font-medium mb-1">Annual Savings</h4>
+                <h4 className="font-medium mb-1">{t('annualSavings')}</h4>
                 <div className="text-lg font-semibold text-blue-800">
                   ₹{Math.round(parseInt(selectedCapacity) * 0.05 * 12).toLocaleString()}
                 </div>
@@ -332,7 +334,7 @@ export function CostGuidance() {
               <div className="flex flex-col gap-4">
                 <CardTitle className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-blue-500" />
-                  AR Structure Calculator
+                  {t('arCalc')}
                 </CardTitle>
                 
                 {/* TOGGLE SWITCH for AR */}
@@ -343,11 +345,11 @@ export function CostGuidance() {
                     onCheckedChange={(checked: any) => setIncludeAR(!!checked)}
                   />
                   <label htmlFor="include-ar" className="text-sm font-medium leading-none cursor-pointer">
-                    Include AR Structure Estimate (Optional)
+                    {t('includeAR')}
                   </label>
                 </div>
               </div>
-              <CardDescription className="mt-2">Add artificial recharge structures to enhance groundwater replenishment</CardDescription>
+              <CardDescription className="mt-2">{t('arDescription')}</CardDescription>
             </CardHeader>
             
             {/* Conditional Rendering based on Checkbox */}
@@ -377,7 +379,7 @@ export function CostGuidance() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Width: {dimensions.width[0]}m</label>
+                  <label className="block text-sm font-medium mb-2">{t('widthFt')}: {dimensions.width[0]}m</label>
                   <Slider
                     value={dimensions.width}
                     onValueChange={(value: any) => setDimensions(prev => ({ ...prev, width: value }))}
@@ -402,7 +404,7 @@ export function CostGuidance() {
 
                 {selectedStructure === 'trench' && (
                   <div>
-                    <label className="block text-sm font-medium mb-2">Length: {dimensions.length[0]}m</label>
+                    <label className="block text-sm font-medium mb-2">{t('lengthFt')}: {dimensions.length[0]}m</label>
                     <Slider
                       value={dimensions.length}
                       onValueChange={(value: any) => setDimensions(prev => ({ ...prev, length: value }))}
@@ -423,7 +425,7 @@ export function CostGuidance() {
                 <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-amber-800">
                     <Gift className="w-5 h-5" />
-                    AR Subsidy
+                    {t('arSubsidyTitle')}
                 </CardTitle>
                 <CardDescription>Government support for Artificial Recharge</CardDescription>
                 </CardHeader>
@@ -435,7 +437,7 @@ export function CostGuidance() {
                     onCheckedChange={(checked: any) => setSubsidyOptions(prev => ({ ...prev, ar: !!checked }))}
                     />
                     <label htmlFor="ar-subsidy-card" className="text-sm font-medium leading-none cursor-pointer text-amber-900">
-                    Apply AR Subsidy (up to ₹15,000)
+                    {t('applyARSubsidy')}
                     </label>
                 </div>
                 <div className="text-xs text-amber-700 bg-amber-100 p-2 rounded">
@@ -449,21 +451,21 @@ export function CostGuidance() {
           {includeAR && (
             <Card className="border-blue-200 bg-blue-50 animate-in fade-in zoom-in-95 duration-300">
               <CardHeader>
-                <CardTitle className="text-blue-800">AR Structure Cost</CardTitle>
+                <CardTitle className="text-blue-800">{t('arCostTitle')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
-                  <span>Structure Cost:</span>
+                  <span>{t('structureCost')}</span>
                   <span className="font-semibold">₹{arCost.toLocaleString()}</span>
                 </div>
                 {subsidyOptions.ar && (
                   <div className="flex justify-between text-blue-600">
-                    <span>Applied Subsidy:</span>
+                    <span>{t('appliedSubsidy')}:</span>
                     <span className="font-semibold">-₹{arSubsidy.toLocaleString()}</span>
                   </div>
                 )}
                 <div className="border-t pt-2 flex justify-between font-bold">
-                  <span>AR Net Cost:</span>
+                  <span>{t('arNetCost')}:</span>
                   <span className="text-blue-800">₹{arNetCost.toLocaleString()}</span>
                 </div>
                 
@@ -505,7 +507,7 @@ export function CostGuidance() {
             <CardHeader>
               <CardTitle className="text-orange-800 flex items-center gap-2">
                 <Calculator className="w-5 h-5" />
-                Total Project Cost
+                {t('totalProjectCost')}
               </CardTitle>
               <CardDescription>
                 {includeAR ? "Combined RWH System + AR Structure costs" : "RWH System cost only"}
@@ -537,7 +539,7 @@ export function CostGuidance() {
                   <span className="font-semibold text-orange-600">-₹{totalSubsidies.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-xl font-bold text-orange-800 pt-2 border-t">
-                  <span>Your Total Cost:</span>
+                  <span>{t('yourTotalCost')}</span>
                   <span>₹{totalProjectCost.toLocaleString()}</span>
                 </div>
               </div>
@@ -575,7 +577,7 @@ export function CostGuidance() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Gift className="w-5 h-5 text-primary" />
-                Available Subsidies
+                {t('availableSubsidies')}
               </CardTitle>
               <CardDescription>
                 Government schemes to reduce your installation cost
@@ -617,7 +619,7 @@ export function CostGuidance() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-blue-500" />
-                Approved Contractors
+                {t('approvedContractors')}
               </CardTitle>
               <CardDescription>
                 BWSSB and CGWB certified professionals

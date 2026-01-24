@@ -1,27 +1,63 @@
+// src/components/ProfilePage.tsx
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { User, Mail, Phone, MapPin, Edit2, Settings, Shield, HelpCircle, LogOut, Award, Droplets, LayoutDashboard } from "lucide-react";
+import { User, Settings, Shield, HelpCircle, LogOut, Award, Droplets, LayoutDashboard, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useLocation } from "../contexts/LocationContext";
-import { useLanguage } from "./LanguageContext"; // <--- IMPORT THIS
+import { useLanguage } from "./LanguageContext";
+
+// Firebase
+import { auth, db } from "../firebase";
+import { signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 export function ProfilePage({ onNavigate }: { onNavigate: (tab: string) => void }) {
-  const { t } = useLanguage(); // <--- USE HOOK
+  const { t } = useLanguage();
   const { display: liveLocation, isLoading: isLocationLoading } = useLocation();
-  const [userInfo, setUserInfo] = useState({ name: "Water Warrior", email: "user@example.com", initials: "WW", location: "Bangalore, India" });
+  const [userInfo, setUserInfo] = useState({ 
+    name: "Loading...", 
+    email: "...", 
+    initials: "..", 
+    location: "Detecting..." 
+  });
+  const [stats, setStats] = useState([
+    { label: t('waterSaved'), value: "...", icon: Droplets, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { label: t('impactScore'), value: "...", icon: Award, color: "text-orange-500", bg: "bg-orange-500/10" },
+    { label: t('installations'), value: "0", icon: LayoutDashboard, color: "text-green-500", bg: "bg-green-500/10" },
+  ]);
 
   useEffect(() => {
-    // Keep existing localStorage logic
-  }, []);
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const userRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(userRef);
 
-  const stats = [
-    { label: t('waterSaved'), value: "12.5k L", icon: Droplets, color: "text-blue-500", bg: "bg-blue-500/10" },
-    { label: t('impactScore'), value: "850", icon: Award, color: "text-orange-500", bg: "bg-orange-500/10" },
-    { label: t('installations'), value: "2", icon: LayoutDashboard, color: "text-green-500", bg: "bg-green-500/10" },
-  ];
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUserInfo({
+            name: data.name || "User",
+            email: data.email || auth.currentUser.email || "",
+            initials: (data.name || "U").charAt(0).toUpperCase(),
+            location: liveLocation || "India"
+          });
+          
+          setStats([
+            { label: t('waterSaved'), value: data.waterSaved || "0 L", icon: Droplets, color: "text-blue-500", bg: "bg-blue-500/10" },
+            { label: t('impactScore'), value: data.impactScore || "0", icon: Award, color: "text-orange-500", bg: "bg-orange-500/10" },
+            { label: t('installations'), value: "0", icon: LayoutDashboard, color: "text-green-500", bg: "bg-green-500/10" },
+          ]);
+        }
+      }
+    };
+    fetchUserData();
+  }, [liveLocation, t]);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    onNavigate('auth');
+  };
 
   const menuItems = [
     { label: t('accountSettings'), icon: Settings, desc: "Manage your account details" },
@@ -29,6 +65,7 @@ export function ProfilePage({ onNavigate }: { onNavigate: (tab: string) => void 
     { label: t('helpSupport'), icon: HelpCircle, desc: "FAQs and customer support" },
   ];
 
+  // ... (JSX similar to previous, using updated userInfo and handleLogout) ...
   return (
     <div className="min-h-[90vh] pb-20 relative overflow-hidden bg-gradient-to-br from-slate-50 to-orange-50/50">
       <div className="max-w-md mx-auto p-4 relative z-10 space-y-6">
@@ -78,7 +115,7 @@ export function ProfilePage({ onNavigate }: { onNavigate: (tab: string) => void 
           </Card>
         </motion.div>
 
-        <Button variant="ghost" className="w-full text-red-500 gap-2 h-12" onClick={() => onNavigate('auth')}>
+        <Button variant="ghost" className="w-full text-red-500 gap-2 h-12" onClick={handleLogout}>
             <LogOut size={18} /> {t('signOut')}
         </Button>
       </div>

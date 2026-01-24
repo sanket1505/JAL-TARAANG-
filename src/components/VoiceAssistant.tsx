@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 're
 import { motion } from 'motion/react';
 import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
-import './speech-types';
 
 interface VoiceAssistantProps {
   onTranscript: (text: string) => void;
@@ -16,11 +15,13 @@ export const VoiceAssistant = forwardRef<{ speak: (text: string) => void }, Voic
   const { currentLanguage, t } = useLanguage();
   const [isSupported, setIsSupported] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  
+  // Use "any" for the ref to avoid strict type issues with the browser API
+  const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
 
   // Language codes for speech recognition
-  const speechLanguages = {
+  const speechLanguages: Record<string, string> = {
     en: 'en-IN',
     hi: 'hi-IN',
     mr: 'mr-IN',
@@ -30,13 +31,13 @@ export const VoiceAssistant = forwardRef<{ speak: (text: string) => void }, Voic
   };
 
   useEffect(() => {
-    // Check if speech recognition and synthesis are supported
-    const recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // --- FIX IS HERE: Correctly check for browser support ---
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const synthesis = window.speechSynthesis;
-    
-    if (recognition && synthesis) {
+
+    if (SpeechRecognition && synthesis) {
       setIsSupported(true);
-      recognitionRef.current = new recognition();
+      recognitionRef.current = new SpeechRecognition();
       synthesisRef.current = synthesis;
 
       // Configure speech recognition
@@ -45,13 +46,13 @@ export const VoiceAssistant = forwardRef<{ speak: (text: string) => void }, Voic
         recognitionRef.current.interimResults = false;
         recognitionRef.current.lang = speechLanguages[currentLanguage] || 'en-IN';
 
-        recognitionRef.current.onresult = (event) => {
+        recognitionRef.current.onresult = (event: any) => {
           const transcript = event.results[0][0].transcript;
           onTranscript(transcript);
           setIsListening(false);
         };
 
-        recognitionRef.current.onerror = (event) => {
+        recognitionRef.current.onerror = (event: any) => {
           console.error('Speech recognition error:', event.error);
           setIsListening(false);
         };
@@ -64,7 +65,11 @@ export const VoiceAssistant = forwardRef<{ speak: (text: string) => void }, Voic
 
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          // Ignore errors on cleanup
+        }
       }
       if (synthesisRef.current) {
         synthesisRef.current.cancel();

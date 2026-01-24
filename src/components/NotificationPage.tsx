@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { Badge } from "./ui/badge";
+import { useLanguage } from "./LanguageContext";
 
 interface Notification {
   id: string;
@@ -59,6 +60,7 @@ const mockNotifications: Notification[] = [
 ];
 
 export function NotificationPage({ onNavigate }: { onNavigate: (tab: string) => void }) {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
 
@@ -103,9 +105,9 @@ export function NotificationPage({ onNavigate }: { onNavigate: (tab: string) => 
         
         {/* Header */}
         <div className="flex items-center justify-between pt-4 mb-2">
-            <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('notifications')}</h1>
             <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs text-primary hover:text-orange-600 hover:bg-orange-50">
-                Mark all as read
+                {t('markAllRead')}
             </Button>
         </div>
 
@@ -119,7 +121,7 @@ export function NotificationPage({ onNavigate }: { onNavigate: (tab: string) => 
                     : 'text-muted-foreground hover:bg-white/40'
                 }`}
             >
-                All
+                {t('all')}
             </button>
             <button
                 onClick={() => setFilter('unread')}
@@ -129,7 +131,7 @@ export function NotificationPage({ onNavigate }: { onNavigate: (tab: string) => 
                     : 'text-muted-foreground hover:bg-white/40'
                 }`}
             >
-                Unread
+                {t('unread')}
                 {notifications.some(n => !n.read) && (
                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                 )}
@@ -145,7 +147,7 @@ export function NotificationPage({ onNavigate }: { onNavigate: (tab: string) => 
                     className="text-center py-20 text-muted-foreground"
                 >
                         <Bell size={48} className="mx-auto mb-4 opacity-20" />
-                        <p>No notifications found</p>
+                        <p>{t('noNotifs')}</p>
                         </motion.div>
                       ) : (
                 <div className="space-y-3">
